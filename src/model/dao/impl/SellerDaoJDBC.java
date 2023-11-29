@@ -67,8 +67,31 @@ public class SellerDaoJDBC implements SellerDao{
 
 	@Override
 	public void update(Seller obj) {
-		// TODO Auto-generated method stub
+		PreparedStatement st = null;
 		
+		try {
+			st = conn.prepareStatement(
+					"UPDATE seller "+
+					"SET Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ? "+
+					"WHERE Id = ?");
+			st.getConnection().setAutoCommit(false);
+			
+			st.setString(1, obj.getName());
+			st.setString(2, obj.getEmail());
+			st.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
+			st.setDouble(4, obj.getBaseSalary());
+			st.setInt(5, obj.getDepartment().getId());
+			st.setInt(6, obj.getId());
+			
+			st.executeUpdate();
+			st.getConnection().commit();
+		}
+		catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+		}
 	}
 
 	@Override
@@ -114,6 +137,7 @@ public class SellerDaoJDBC implements SellerDao{
 		Seller sl = new Seller();
 		sl.setId(rs.getInt("id"));
 		sl.setName(rs.getString("name"));
+		sl.setEmail(rs.getString("email"));
 		sl.setBirthDate(rs.getDate("birthdate"));
 		sl.setBaseSalary(rs.getDouble("basesalary"));
 		sl.setDepartment(dp);
@@ -137,7 +161,7 @@ public class SellerDaoJDBC implements SellerDao{
 					"SELECT seller.*,department.Name as DepName "+
 					"FROM seller INNER JOIN department "+
 					"ON seller.DepartmentId = department.Id "+
-					"ORDER BY Name");
+					"ORDER BY id asc");
 			
 			rs = st.executeQuery();
 			
