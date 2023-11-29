@@ -33,17 +33,19 @@ public class program {
 			System.out.println(seller2);	
 		}
 		
-		/*
 		System.out.println("\n=== TEST 4: seller insert ===");
 		Seller newSeller = new Seller(null, "Walace Ronald", "walaceronald@gmail.com", new Date(), 4000.0, department);
 		sellerDao.insert(newSeller);
 		System.out.println("Inserted! New id ="+ newSeller.getId());
-		*/
 		
 		System.out.println("\n=== TEST 5: seller update ===");
 		seller = sellerDao.findById(9);
 		seller.setEmail("walaceronald@teste.com.br");
 		sellerDao.update(seller);
-		System.out.println("Updated!"+ seller);
+		System.out.println("Updated! "+ seller);
+		
+		System.out.println("\n=== TEST 6: seller delete ===");
+		sellerDao.deleteById(newSeller.getId());
+		System.out.println("Deleted!");
 	}
 }
